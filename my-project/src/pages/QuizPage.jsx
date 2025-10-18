@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom"; // ✅ ADD useNavigate
 import QuizQuestion from "../components/QuizQuestion";
 import jsPDF from "jspdf";
 import { API_URL } from "../config";
 
 const QuizPage = () => {
   const { domainId } = useParams();
+  const navigate = useNavigate(); // ✅ ADD navigate
   const certRef = useRef();
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -1192,8 +1193,9 @@ const QuizPage = () => {
           </>
         )}
 
+        {/* ✅ UPDATED: "Take Another Quiz" button fixed */}
         <button
-          onClick={() => window.location.reload()}
+          onClick={() => navigate('/domains')} // ✅ CHANGED: Use navigate instead of window.location.reload()
           className="mt-6 px-6 py-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl transition-all"
         >
           {passed ? "Take Another Quiz" : "Retry Quiz"}
