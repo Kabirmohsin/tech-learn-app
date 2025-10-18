@@ -3,14 +3,21 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import certificateRoutes from "./routes/certificateRoutes.js";
-import authRoutes from "./routes/authRoutes.js"; // ✅ ADD THIS LINE
+import authRoutes from "./routes/authRoutes.js";
 
 dotenv.config();
 const app = express();
 
-app.use(cors());
-app.use(express.json());
+// ✅ UPDATED CORS for production
+app.use(cors({
+  origin: [
+    "https://tech-learn-frontend-kabir.onrender.com", // Your frontend URL
+    "http://localhost:5173" // For local development
+  ],
+  credentials: true
+}));
 
+app.use(express.json());
 connectDB();
 
 app.get("/", (req, res) => {
@@ -18,7 +25,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/certificates", certificateRoutes);
-app.use("/api/auth", authRoutes); // ✅ ADD THIS LINE
+app.use("/api/auth", authRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
