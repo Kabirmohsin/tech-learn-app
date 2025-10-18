@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../config";  // ✅ ADD THIS IMPORT
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -22,15 +23,15 @@ const LoginPage = () => {
     }));
   };
 
-  // 🔹 Handle form submit
+  // 🔹 Handle form submit - UPDATED API URLs
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
       const url = isLogin
-        ? "http://localhost:5000/api/auth/login"
-        : "http://localhost:5000/api/auth/signup";
+        ? `${API_URL}/auth/login`  // ✅ CHANGED
+        : `${API_URL}/auth/signup`; // ✅ CHANGED
 
       if (!isLogin && formData.password !== formData.confirmPassword) {
         alert("Passwords do not match!");
