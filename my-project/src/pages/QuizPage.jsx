@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // ✅ ADD useNavigate
+import { useParams, useNavigate } from "react-router-dom";
 import QuizQuestion from "../components/QuizQuestion";
 import jsPDF from "jspdf";
 import { API_URL } from "../config";
 
 const QuizPage = () => {
   const { domainId } = useParams();
-  const navigate = useNavigate(); // ✅ ADD navigate
+  const navigate = useNavigate();
   const certRef = useRef();
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -970,6 +970,18 @@ const QuizPage = () => {
     }
   };
 
+  // ✅ NEW: Function to restart the same quiz
+  const restartQuiz = () => {
+    setCurrentQuestion(0);
+    setSelectedOptions({});
+    setShowScore(false);
+    setScore(0);
+    setUserName("");
+    setShowCertificate(false);
+    setTimeLeft(1800);
+    setIsGenerating(false);
+  };
+
   // Certificate View - Updated with Navbar Design
   if (showCertificate) {
     const percentage = Math.round((score / totalQuestions) * 100);
@@ -1193,13 +1205,23 @@ const QuizPage = () => {
           </>
         )}
 
-        {/* ✅ UPDATED: "Take Another Quiz" button fixed */}
+        {/* ✅ UPDATED: "Take Another Quiz" button - Restarts same quiz */}
         <button
-          onClick={() => navigate('/domains')} // ✅ CHANGED: Use navigate instead of window.location.reload()
-          className="mt-6 px-6 py-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl transition-all"
+          onClick={restartQuiz} // ✅ CHANGED: Restarts the same quiz
+          className="mt-6 px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold rounded-xl transition-all transform hover:scale-105"
         >
-          {passed ? "Take Another Quiz" : "Retry Quiz"}
+          {passed ? "🔄 Take Same Quiz Again" : "🔄 Retry Quiz"}
         </button>
+
+        {/* ✅ ADDED: Option to go to other domains */}
+        {passed && (
+          <button
+            onClick={() => navigate('/domains')}
+            className="mt-4 px-6 py-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl transition-all"
+          >
+            📚 Try Other Domains
+          </button>
+        )}
       </div>
     );
   }
