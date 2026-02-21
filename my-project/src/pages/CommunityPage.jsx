@@ -146,11 +146,11 @@ const CommunityPage = () => {
   ];
 
   const communityStats = {
-    totalMembers: "10,284",
-    onlineNow: "1,243",
-    discussions: "8,742",
-    solutions: "5,619"
-  };
+  totalMembers: "128",
+  onlineNow: "14",
+  discussions: "53",
+  solutions: "27"
+};;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
