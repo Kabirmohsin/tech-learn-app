@@ -93,13 +93,31 @@ const CommunityPage = () => {
     ]
   };
 
-  useEffect(() => {
-    // Simulate loading data
-    setTimeout(() => {
-      setPosts(communityData[activeTab]);
-      setIsLoading(false);
-    }, 1000);
-  }, [activeTab]);
+ useEffect(() => {
+  const fetchData = async () => {
+    setIsLoading(true);
+
+    try {
+      if (activeTab === "members") {
+        const res = await fetch(
+          "https://tech-learn-backend-kabir.onrender.com/api/users/members"
+        );
+
+        const data = await res.json();
+        setPosts(data);
+      } else {
+        setPosts(communityData[activeTab] || []);
+      }
+    } catch (error) {
+      console.error("Error fetching members:", error);
+      setPosts([]);
+    }
+
+    setIsLoading(false);
+  };
+
+  fetchData();
+}, [activeTab]);
 
   const handleCreatePost = (e) => {
     e.preventDefault();
@@ -276,97 +294,72 @@ const CommunityPage = () => {
               </div>
             </div>
 
-            {/* Content */}
-            <div className="space-y-4">
-              {isLoading ? (
-                // Loading Skeleton
-                Array.from({ length: 3 }).map((_, index) => (
-                  <div key={index} className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 animate-pulse">
-                    <div className="flex items-center space-x-3 mb-4">
-                      <div className="w-10 h-10 bg-white/20 rounded-full"></div>
-                      <div className="space-y-2">
-                        <div className="h-4 bg-white/20 rounded w-24"></div>
-                        <div className="h-3 bg-white/20 rounded w-16"></div>
-                      </div>
-                    </div>
-                    <div className="h-5 bg-white/20 rounded mb-3"></div>
-                    <div className="h-4 bg-white/20 rounded w-3/4"></div>
-                  </div>
-                ))
-              ) : (
-                posts.map((post) => (
-                  <div key={post.id} className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300">
-                    {/* Post Header */}
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-lg">
-                          {post.avatar}
-                        </div>
-                        <div>
-                          <div className="font-semibold">{post.author}</div>
-                          <div className="text-sm text-gray-400">{post.timestamp}</div>
-                        </div>
-                      </div>
-                      {post.solved && (
-                        <span className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm font-medium">
-                          ✅ Solved
-                        </span>
-                      )}
-                    </div>
+          {/* Content */}
+<div className="space-y-4">
 
-                    {/* Post Content */}
-                    <h3 className="text-xl font-semibold mb-3 hover:text-blue-400 cursor-pointer transition-colors">
-                      {post.title || post.question}
-                    </h3>
+{isLoading ? (
 
-                    {/* Tags */}
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {post.tags.map((tag, index) => (
-                        <span
-                          key={index}
-                          className="bg-white/10 text-gray-300 px-3 py-1 rounded-full text-sm hover:bg-white/20 transition-colors cursor-pointer"
-                        >
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
+  <p className="text-center text-gray-400">Loading...</p>
 
-                    {/* Engagement Stats */}
-                    <div className="flex items-center justify-between pt-4 border-t border-white/10">
-                      <div className="flex items-center space-x-6 text-gray-400">
-                        <button className="flex items-center space-x-2 hover:text-red-400 transition-colors">
-                          <span>❤️</span>
-                          <span>{post.likes || 0}</span>
-                        </button>
-                        <button className="flex items-center space-x-2 hover:text-blue-400 transition-colors">
-                          <span>💬</span>
-                          <span>{post.comments || post.answers || 0}</span>
-                        </button>
-                        <button className="flex items-center space-x-2 hover:text-green-400 transition-colors">
-                          <span>🔗</span>
-                          <span>Share</span>
-                        </button>
-                      </div>
-                      {post.role && (
-                        <div className="text-sm text-gray-400">{post.role}</div>
-                      )}
-                    </div>
+) : activeTab === "members" ? (
 
-                    {/* Member Badges */}
-                    {post.badges && (
-                      <div className="flex gap-2 mt-3">
-                        {post.badges.map((badge, index) => (
-                          <span key={index} className="bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded text-xs">
-                            {badge}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
+  /* ===== MEMBERS UI ===== */
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    {(posts || []).map((member) => (
+      <div
+        key={member.id}
+        className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition"
+      >
+        <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-xl mb-4">
+          {member.avatar || member.name?.charAt(0)}
+        </div>
+
+        <h3 className="text-lg font-semibold">
+          {member.name}
+        </h3>
+
+        <p className="text-gray-400 text-sm">
+          {member.role}
+        </p>
+
+        <p className="text-xs text-gray-500 mt-2">
+          Joined: {member.joined || "Recently"}
+        </p>
+      </div>
+    ))}
+
+  </div>
+
+) : (
+
+  /* ===== DISCUSSIONS + QUESTIONS ===== */
+  (posts || []).map((post) => (
+    <div
+      key={post.id}
+      className="bg-white/5 border border-white/10 rounded-2xl p-6"
+    >
+      <div className="font-semibold">
+        {post.author}
+      </div>
+
+      <h3 className="text-xl mb-2">
+        {post.title || post.question}
+      </h3>
+
+      <div className="flex gap-2 flex-wrap">
+        {post.tags?.map((tag, i) => (
+          <span key={i} className="bg-white/10 px-2 py-1 rounded">
+            #{tag}
+          </span>
+        ))}
+      </div>
+    </div>
+  ))
+
+)}
+
+</div>
 
           {/* Right Sidebar */}
           <div className="lg:col-span-1 space-y-6">
