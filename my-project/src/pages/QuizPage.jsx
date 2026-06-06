@@ -320,7 +320,7 @@ const saveCertificateToStorage = async (certificateData) => {
       newWindow.document.write(html);
       newWindow.document.close();
       newWindow.focus();
-      await saveCertificateToStorage(certificateData);
+     
     } catch (error) {
       alert('Error generating certificate.');
     } finally {
