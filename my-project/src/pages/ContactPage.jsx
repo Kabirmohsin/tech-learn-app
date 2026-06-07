@@ -18,10 +18,6 @@ const res = await fetch(`${API_URL}/api/contact`, {
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify(formData),
 });
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
       const data = await res.json();
       if (data.success) {
         setSubmitted(true);
