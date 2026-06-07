@@ -24,8 +24,8 @@ const LoginPage = () => {
 
     try {
       const url = isLogin
-        ? "http://localhost:5000/api/auth/login"
-        : "http://localhost:5000/api/auth/signup";
+  ? "https://tech-learn-backend-kabir.onrender.com/api/auth/login"
+  : "https://tech-learn-backend-kabir.onrender.com/api/auth/signup";
 
       if (!isLogin && formData.password !== formData.confirmPassword) {
         alert("Passwords do not match!");
